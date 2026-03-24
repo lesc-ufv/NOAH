@@ -1,0 +1,14 @@
+
+services:
+  ns3:
+    build: .
+    container_name: ns3-3.25
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./projects:/opt/ns3-projects
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    command: /bin/bash
