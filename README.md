@@ -13,7 +13,7 @@ O repositório está organizado da seguinte forma:
 
 # Selos Considerados
 
-Os selos considerados para avaliação deste artefato são: Disponível (D) e Funcional (F).
+Os selos considerados para avaliação deste artefato são: Disponível (D), Funcional (F), Reprodutíveis(R).
 
 # Informações básicas
 
