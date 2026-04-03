@@ -117,9 +117,14 @@ Os experimentos basicamente são uma repetição de passos, visto que é necess�
 simulador a cada modificação, que no caso se trata da adição do ARQ, adição do NOAH e uso do 
 best-effort  do próprio NS3.
 
-## Reivindicação 1: Comparativo taxa de pacotes aceitos
+As reinvificações, contém basicamente o mesmo passo a passo, mudando somente o arquivo que controla
+o número de retransmissões máxima que o protocolo fará
 
-## ARQ
+## Reivindicação 1: Comparativo taxa de pacotes aceitos para 2 retransmissões
+<details>
+<summary>Clique para ver</summary>
+
+### ARQ
 
 Fora do container, copie o módulo VLC para o diretório src/ localizado dentro do container:
 
@@ -147,7 +152,7 @@ Execute o comando para realizar 10 testes e salvar nos arquivos de resultado
 ./testesARQ.sh
 
 ```
-## NOAH
+### NOAH
 
 Fora do container, copie o módulo VLC para o diretório src/ localizado dentro do container:
 
@@ -175,7 +180,7 @@ Execute o comando para realizar 10 testes e salvar nos arquivos de resultado
 
 ```
 
-## NS3
+### NS3
 
 Fora do container, copie o módulo VLC para o diretório src/ localizado dentro do container:
 
@@ -204,22 +209,78 @@ Execute o comando para realizar 10 testes e salvar nos arquivos de resultado
 
 ```
 
-## Resultados
+### Resultados
 Novamente fora do container, na pasta de resultados rode o script responsável para recuperar os resultados gerados
 
 ```bash
 ./recuperarResultados.sh
 
 ```
-Rode o notebook
-```bash
+Rode o notebook e os gráficos serão gerados
+</details> 
 
+## Reivindicação 2: Comparativo taxa de pacotes aceitos para 3 retransmissões
+<details>
+<summary>Clique para ver</summary>
+
+Para a realização da reinvidicação 2, visto que só sera alterado um arquivo, basta
+modificar o seguinte passo, mudando a pasta onde o exemplo esta de 2 para 3 retransmissoes:
+
+**OBS:** O restante deve ser executado normalmente como descrito na reinvidicação 1
+deste os passos anteriores aos posteriores, modificando somente a pasta de onde o exemplo
+será obtido
+
+### ARQ
+
+Ainda fora do container copie o arquivo de simulação para o diretório `scratch/`
+
+Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
+```bash
+cp /root/ARQ/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+```
+### NOAH
+
+Ainda fora do container copie o arquivo de simulação para o diretório `scratch/`
+
+Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
+```bash
+cp /root/NOAH/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 
-## Reivindicações #Y
+
+## Reivindicação 3: Comparativo taxa de pacotes aceitos para 4 retransmissões
+<details>
+<summary>Clique para ver</summary>
+
+Para a realização da reinvidicação 3, deve seguir o mesmo que a reinvidicação 2, basta
+modificar o seguinte passo, mudando a pasta onde o exemplo esta de 2 para 3 retransmissoes:
+
+**OBS:** O restante deve ser executado normalmente como descrito na reinvidicação 1
+deste os passos anteriores aos posteriores, modificando somente a pasta de onde o exemplo
+será obtido
+
+### ARQ
+
+Ainda fora do container copie o arquivo de simulação para o diretório `scratch/`
+
+Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
+```bash
+cp /root/ARQ/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+```
+### NOAH
+
+Ainda fora do container copie o arquivo de simulação para o diretório `scratch/`
+
+Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
+```bash
+cp /root/NOAH/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+```
+</details> 
 
 # LICENSE
 
 Este projeto está licenciado sob a **GNU General Public License v2.0** (GPLv2).
 
 Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+
