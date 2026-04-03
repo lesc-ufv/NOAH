@@ -220,6 +220,7 @@ Rode o notebook e os gráficos serão gerados
 </details> 
 
 ## Reivindicação 2: Comparativo taxa de pacotes aceitos para 3 retransmissões
+
 <details>
 <summary>Clique para ver</summary>
 
@@ -246,9 +247,10 @@ Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
 cp /root/NOAH/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
-
+</details> 
 
 ## Reivindicação 3: Comparativo taxa de pacotes aceitos para 4 retransmissões
+
 <details>
 <summary>Clique para ver</summary>
 
