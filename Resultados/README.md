@@ -1,1 +1,0 @@
-# Instruções para gerar gráficos de resultados
