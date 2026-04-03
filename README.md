@@ -9,11 +9,13 @@ O repositório disponibiliza os códigos-fonte, scripts para execução em conta
 
 O repositório está organizado da seguinte forma:
 
-- `ARQ/`:
-- `Docker/`: contém os arquivos necessários para a construção do ambiente de execução, incluindo o `Dockerfile` e o `docker-compose.yml`.
-- `NOAH/`:
-- `NS3/`:
-- `Resultados/`:
+- `ARQ/vlc/`: módulo com implementação e testes do cenário com ARQ  
+- `NOAH/vlc/`: módulo com implementação e testes do cenário com NOAH  
+- `NS3/vlc/`: módulo com implementação dos cenários base do NS-3  
+- `Docker/`: arquivos para configuração do ambiente com Docker  
+- `Resultados/`: scripts e arquivos de análise dos resultados  
+- `LICENSE`: licença do projeto  
+- `README.md`: documentação principal  
 
 # Selos Considerados
 
@@ -67,7 +69,7 @@ cd NOAH
 ```bash
 cd Docker
 docker compose build
-docker compose up
+docker compose up -d
 ```
 
 ## 3. Executar o container
@@ -75,11 +77,11 @@ docker compose up
 docker exec -it ns3-3.25 bash
 ```
 ## 4. Adicionar o módulo VLC ao ns-3
-Fora do container, copie o módulo VLC para o diretório src/:
+Fora do container, copie o módulo VLC do cenário que deseja testar para o diretório src/:
 
 Substitua `/root` pelo diretório onde o arquivo está localizado:
 ```bash
-cp -r /root/vlc /opt/ns-allinone-3.25/ns-3.25/src/
+docker cp "/root/vlc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/src/
 ```
 
 ## 5. Adicionar os scripts de simulação
@@ -88,13 +90,15 @@ Copie os arquivos de simulação para o diretório `scratch/`
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/vlc/exemplo.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/vlc/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 
 ## 6. Compilar o ns-3 com modulo VLC
 
+Volte ao container e execute os comandos para compilar o ns-3, o processo pode demorar cerca de 1 minuto
+
 ```bash
-cd /opt/ns-allinone-3.25/ns-3.25
+./waf clean
 ./waf configure
 ./waf build
 ```
@@ -103,11 +107,33 @@ cd /opt/ns-allinone-3.25/ns-3.25
 Após a instalação para se executar o teste mínimo é necessário apenas utilizar o comando
 
 ```bash
-./waf --run exemplo
+./waf --run vlc-example
 ```
-No qual `exemplo` corresponde ao nome do arquivo `.cc` localizado em `scratch/`.
+No qual `vlc-example` corresponde ao nome do arquivo `.cc` localizado em `scratch/`.
 
-Resultado esperado: 
+## Resultado esperado (exemplo)
+
+```text
+Pacote corrompido? 0
+
+------FIM DO PACOTE-------
+ID1= 88 ID2= 0
+Pacote corrompido? 0
+
+------FIM DO PACOTE-------
+ID1= 89 ID2= 0
+Pacote corrompido? 1
+ID1= 90 ID2= 0
+Pacote corrompido? 0
+
+...
+
+Throughput value is 303390
+Number of received packets: 100
+Number of good packets: 57
+Distance between TX and RX is 19 meters
+goodput value is 182.403
+```
 
 # Experimentos
 
@@ -115,7 +141,7 @@ Esta seção detalha como reproduzir parte dos resultados apresentados nos gráf
 
 Os experimentos basicamente são uma repetição de passos, visto que é necessário reconfigurar o
 simulador a cada modificação, que no caso se trata da adição do ARQ, adição do NOAH e uso do 
-best-effort  do próprio NS3.
+best-effort do próprio NS3.
 
 As reinvificações, contém basicamente o mesmo passo a passo, mudando somente o arquivo que controla
 o número de retransmissões máxima que o protocolo fará
@@ -130,27 +156,27 @@ Fora do container, copie o módulo VLC para o diretório src/ localizado dentro 
 
 Substitua `/root` pelo diretório onde o arquivo está localizado:
 ```bash
-cp -r /root/ARQ/vlc /opt/ns-allinone-3.25/ns-3.25/src/
+docker cp "/root/ARQ/vlc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/src/
 ```
 
 Ainda fora do container copie o arquivo de simulação para o diretório `scratch/`
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/ARQ/vlc/examples/2-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/ARQ/vlc/examples/2-Retransmissoes/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 
 
 Entre no container e na pasta `/vlc`
 ```bash
-cd /src/vlc
-
+cd src/vlc
 ```
-Execute o comando para realizar 10 testes e salvar nos arquivos de resultado
+Execute o comando para realizar 10 testes e salvar nos arquivos de resultado, sendo necessario conceder a permissão ao arquivo
 
 ```bash
-./testesARQ.sh
-
+chmod +x testesARQ.sh
+cd /opt/ns-allinone-3.25/ns-3.25
+bash src/vlc/testesARQ.sh
 ```
 ### NOAH
 
@@ -158,26 +184,26 @@ Fora do container, copie o módulo VLC para o diretório src/ localizado dentro 
 
 Substitua `/root` pelo diretório onde o arquivo está localizado:
 ```bash
-cp -r /root/NOAH/vlc /opt/ns-allinone-3.25/ns-3.25/src/
+docker cp "/root/NOAH/vlc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/src/
 ```
 
 Ainda fora do container copie o arquivo de simulação para o diretório `scratch/`
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/NOAH/vlc/examples/2-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/NOAH/vlc/examples/2-Retransmissoes/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 
 Entre no container e na pasta `/vlc`
 ```bash
-cd /src/vlc
-
+cd src/vlc
 ```
-Execute o comando para realizar 10 testes e salvar nos arquivos de resultado
+Execute o comando para realizar 10 testes e salvar nos arquivos de resultado, sendo necessario conceder a permissão ao arquivo
 
 ```bash
-./testesNOAH.sh
-
+chmod +x testesNOAH.sh
+cd /opt/ns-allinone-3.25/ns-3.25
+bash src/vlc/testesNOAH.sh
 ```
 
 ### NS3
@@ -186,37 +212,37 @@ Fora do container, copie o módulo VLC para o diretório src/ localizado dentro 
 
 Substitua `/root` pelo diretório onde o arquivo está localizado:
 ```bash
-cp -r /root/NS3/vlc /opt/ns-allinone-3.25/ns-3.25/src/
+docker cp "/root/NS3/vlc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/src/
 ```
 
 Ainda fora do container copie o arquivo de simulação para o diretório `scratch/`
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/NS3/vlc/examples/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/NS3/vlc/examples/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 
 
 Entre no container e na pasta `/vlc`
 ```bash
-cd /src/vlc
-
+cd src/vlc
 ```
-Execute o comando para realizar 10 testes e salvar nos arquivos de resultado
+Execute o comando para realizar 10 testes e salvar nos arquivos de resultado, sendo necessario conceder a permissão ao arquivo
 
 ```bash
-./testesNS3.sh
-
+chmod +x testesNS3.sh
+cd /opt/ns-allinone-3.25/ns-3.25
+bash src/vlc/testesNS3.sh
 ```
 
 ### Resultados
 Novamente fora do container, na pasta de resultados rode o script responsável para recuperar os resultados gerados
 
 ```bash
+chmod +x recuperarResultados.sh
 ./recuperarResultados.sh
-
 ```
-Rode o notebook e os gráficos serão gerados
+Após a coleta dos resultados, abra o arquivo `NOAH.ipynb` dentro de `Resultados` em um ambiente Jupyter (VS Code ou navegador) e execute as células para gerar os gráficos.
 </details> 
 
 ## Reivindicação 2: Comparativo taxa de pacotes aceitos para 3 retransmissões
@@ -237,7 +263,7 @@ Ainda fora do container copie o arquivo de simulação para o diretório `scratc
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/ARQ/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/ARQ/vlc/examples/3-Retransmissoes/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 ### NOAH
 
@@ -245,7 +271,7 @@ Ainda fora do container copie o arquivo de simulação para o diretório `scratc
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/NOAH/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/NOAH/vlc/examples/3-Retransmissoes/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 </details> 
 
@@ -267,7 +293,7 @@ Ainda fora do container copie o arquivo de simulação para o diretório `scratc
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/ARQ/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/ARQ/vlc/examples/3-Retransmissoes/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 ### NOAH
 
@@ -275,7 +301,7 @@ Ainda fora do container copie o arquivo de simulação para o diretório `scratc
 
 Substitua `/root/vlc` pelo diretório onde o arquivo está localizado:
 ```bash
-cp /root/NOAH/vlc/examples/3-Retransmissoes/vlc-example.cc /opt/ns-allinone-3.25/ns-3.25/scratch/
+docker cp "/root/NOAH/vlc/examples/3-Retransmissoes/vlc-example.cc" ns3-3.25:/opt/ns-allinone-3.25/ns-3.25/scratch/
 ```
 </details> 
 
